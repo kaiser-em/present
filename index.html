@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#F2F2F4">
+  <script>/* évite le flash de thème au démarrage : applique thème + couleur de barre avant le 1er rendu */
+    (function () { try {
+      var s = (JSON.parse(localStorage.getItem('present_v2') || '{}').settings || {}), r = document.documentElement;
+      if (s.theme === 'dark' || s.theme === 'light') r.dataset.theme = s.theme;
+      var dark = s.theme === 'dark' || (s.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+      document.querySelector('meta[name=theme-color]').content = dark ? '#121214' : '#F2F2F4';
+    } catch (e) {} })();
+  </script>
+  <meta name="color-scheme" content="light dark">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Present">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="description" content="Suivi d’habitudes et time blocking">
+  <title>Present</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/svg+xml" href="assets/images/icon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32.png">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+  <link rel="stylesheet" href="css/tokens.css?v=7">
+  <link rel="stylesheet" href="css/app.css?v=7">
+</head>
+<body>
+  <div class="app">
+    <main id="view" tabindex="-1" aria-live="polite"></main>
+    <div class="tbar" id="tbar" hidden></div>
+    <button class="fab" id="fab" type="button" hidden></button>
+    <nav class="nav" id="nav" aria-label="Navigation principale"></nav>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <input type="file" id="file-import" accept="application/json,.json" hidden>
+
+  <script src="js/util.js?v=7"></script>
+  <script src="js/i18n.js?v=7"></script>
+  <script src="js/icons.js?v=7"></script>
+  <script src="js/store.js?v=7"></script>
+  <script src="js/ui.js?v=7"></script>
+  <script src="js/forms.js?v=7"></script>
+  <script src="js/today.js?v=7"></script>
+  <script src="js/timeline.js?v=7"></script>
+  <script src="js/calendar.js?v=7"></script>
+  <script src="js/habit.js?v=7"></script>
+  <script src="js/statsview.js?v=7"></script>
+  <script src="js/coach.js?v=7"></script>
+  <script src="js/coach-plus.js?v=7"></script>
+  <script src="js/report.js?v=7"></script>
+  <script src="js/profile.js?v=7"></script>
+  <script src="js/notifier.js?v=7"></script>
+  <script src="js/timer.js?v=7"></script>
+  <script src="js/sync.js?v=7"></script>
+  <script src="js/app.js?v=7"></script>
+</body>
+</html>

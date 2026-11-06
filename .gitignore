@@ -1,0 +1,5 @@
+backups/
+*.tmp
+.db-*
+.c-*
+data/

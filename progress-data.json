@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "skill": "habbit",
+  "linked_skill": "strict-teammate",
+  "timezone": "Indian/Antananarivo",
+  "examen_hour": 21,
+  "current_streak": 1,
+  "best_streak": 1,
+  "total_days": 1,
+  "complete_days": 1,
+  "days": [
+    {
+      "date": "2026-10-31",
+      "wake_time": "03:00",
+      "pillars": {
+        "prayer_morning": {
+          "done": true,
+          "minutes": 180
+        },
+        "reading_ot": {
+          "done": true,
+          "chapters": 10
+        },
+        "reading_nt": {
+          "done": true,
+          "chapters": 10
+        },
+        "verse_memorized": {
+          "done": true,
+          "reference": "Luc 9:23"
+        },
+        "confession_aloud": {
+          "done": true
+        },
+        "work_7_16": {
+          "done": true
+        },
+        "pause_13h": {
+          "done": true
+        },
+        "study_night": {
+          "done": true,
+          "minutes": 30
+        },
+        "examen_obedient": {
+          "done": true
+        },
+        "writing_audio": {
+          "done": true
+        }
+      },
+      "never_miss_twice_ok": true,
+      "notes": "Test E2E",
+      "streak_day": 1
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+edge-tts>=6.1
+# optionnel : notifications Web Push quand l app est fermée
+pywebpush>=2.0

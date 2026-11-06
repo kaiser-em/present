@@ -1,0 +1,52 @@
+{
+  "applicationId": "com.present.habittracker",
+  "name": "Present",
+  "shortName": "Present",
+  "description": "Habit tracking, time blocking, and AI coach",
+  "version": "2.5.0",
+  "versionCode": 25000,
+  "host": "YOUR_DOMAIN.com",
+  "startUrl": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#F2F2F4",
+  "backgroundColor": "#F2F2F4",
+  "navigationColor": "#F2F2F4",
+  "navigationColorDark": "#121214",
+  "icon": "../assets/images/app-icon-512.png",
+  "maskableIcon": "../assets/images/app-icon-maskable-512.png",
+  "splash": {
+    "icon": "../assets/images/app-icon-512.png",
+    "backgroundColor": "#F2F2F4"
+  },
+  "shortcuts": [
+    {
+      "name": "Timeline",
+      "short_name": "Timeline",
+      "url": "/#/timeline",
+      "icon": "../assets/images/app-icon-192.png"
+    },
+    {
+      "name": "Coach",
+      "short_name": "Coach",
+      "url": "/#/coach",
+      "icon": "../assets/images/app-icon-192.png"
+    }
+  ],
+  "enableNotifications": true,
+  "enableSiteSettingsShortcut": true,
+  "webManifestUrl": "https://YOUR_DOMAIN.com/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {
+      "enabled": false
+    },
+    "playBilling": {
+      "enabled": false
+    }
+  },
+  "signing": {
+    "keystore": "./keystore.jks",
+    "alias": "present-key"
+  }
+}
