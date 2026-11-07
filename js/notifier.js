@@ -16,6 +16,11 @@
         new Notification(title, opts);
       } catch (e) { /* ignoré */ }
     },
+    // notification système (si autorisée) + toast quand l'app est visible
+    notify(title, body, tag, o = {}) {
+      if (N.supported && Notification.permission === 'granted') N.show(title, body, tag);
+      if (!document.hidden && o.toast !== false) UI.toast(`${title} · ${body}`, { icon: o.icon || 'bell', ms: 5000 });
+    },
     check() {
       if (!Store.settings.reminders) return;
       const today = U.today(), now = U.nowMin(), seen = Store.meta.notified || {};

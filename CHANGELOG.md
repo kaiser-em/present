@@ -1,5 +1,10 @@
 # Journal des versions
 
+## 2.6.0 — Timeline minimaliste + minuteur automatique
+- Anneau de progression des habitudes corrigé (SVG, extrémités arrondies, plus d'encoches).
+- Timeline épurée : pastille fine, progression en dégradé, heure actuelle en gras à gauche (plus de barre horizontale), « 58 min restantes ».
+- Le minuteur démarre tout seul au début d'un bloc et s'arrête (et enregistre) à sa fin, avec notification de début et de fin. Abandonner/terminer manuellement empêche le redémarrage automatique.
+
 ## 2.5.0 — Minuteur sur les blocs de la timeline
 - Bouton **Démarrer** sur les éléments de la timeline qui ont une durée (tâches, habitudes) ; barre flottante avec temps écoulé, pause/reprise, terminer, abandonner.
 - Le **temps réellement passé** est enregistré (`spent` dans `db.json`). Habitude de type Temps : il s'ajoute à la valeur du jour. Tâche : terminée automatiquement si la durée prévue est atteinte, sinon proposition « Terminer la tâche ».

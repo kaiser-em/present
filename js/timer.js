@@ -1,6 +1,6 @@
 /* Present — minuteur sur les blocs de la timeline : enregistre le temps réellement passé */
 (function () {
-  const KEY = 'present_timer';                 // état propre à l'appareil (pas dans db.json)
+  const KEY = 'present_timer', SKIP = 'present_timer_skip';                 // état propre à l'appareil (pas dans db.json)
   const load = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch (e) { return null; } };
   const persist = () => { try { Timer.st ? localStorage.setItem(KEY, JSON.stringify(Timer.st)) : localStorage.removeItem(KEY); } catch (e) {} };
   const hms = (ms) => { const s = Math.floor(ms / 1000), h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60); return h ? `${h}:${String(m).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}` : `${m}:${String(s % 60).padStart(2, '0')}`; };
@@ -32,9 +32,10 @@
       persist(); Timer.paint(true);
     },
     // termine et enregistre : habitude Temps → ajouté à la valeur ; tâche → terminée si le prévu est atteint
-    stop() {
+    stop(capMs) {
       const s = Timer.st; if (!s) return;
-      const ms = Timer.elapsed(), min = ms >= 30000 ? Math.max(1, Math.round(ms / 60000)) : 0;
+      Timer.skip(s.kind, s.id, s.date);
+      const ms = capMs ? Math.min(Timer.elapsed(), capMs) : Timer.elapsed(), min = ms >= 30000 ? Math.max(1, Math.round(ms / 60000)) : 0;
       Timer.st = null; persist(); Timer.paint(true);
       if (!min) return UI.toast(T('tm.short'));
       Store.addSpent(s.kind, s.id, s.date, min);
@@ -46,7 +47,33 @@
       }
       UI.toast(T('tm.saved', { d: U.dur(min) }) + ` · ${s.title}`, { icon: 'check', ms: 4500, ...(action || {}) });
     },
-    discard() { Timer.st = null; persist(); Timer.paint(true); },
+    discard() { if (Timer.st) Timer.skip(Timer.st.kind, Timer.st.id, Timer.st.date); Timer.st = null; persist(); Timer.paint(true); },
+
+    /* ----- démarrage / fin automatiques selon l'horaire du bloc ----- */
+    skipped() { try { return JSON.parse(localStorage.getItem(SKIP)) || {}; } catch (e) { return {}; } },
+    skip(kind, id, date) {
+      const o = Timer.skipped(), today = U.today();
+      Object.keys(o).forEach((k) => { if (!k.startsWith(today)) delete o[k]; });
+      o[`${date}|${kind}|${id}`] = 1; try { localStorage.setItem(SKIP, JSON.stringify(o)); } catch (e) {}
+    },
+    auto() {
+      if (!window.Store || !Store.itemsOn) return;
+      const today = U.today(), now = U.nowMin(), s = Timer.st;
+      if (s && s.auto && (s.date !== today || now >= s.end)) {                        // fin du bloc → arrêt + enregistrement
+        const t = s.title, cap = s.dur * 60000, mins = Math.max(1, Math.round(Math.min(Timer.elapsed(), cap) / 60000));
+        Timer.stop(cap); UI.haptic([30, 60, 30]);
+        if (window.Notifier) Notifier.notify(T('tm.autoEnd', { t }), T('tm.autoEndBody', { d: U.dur(mins) }), 'timer-end-' + s.id, { toast: false });
+        return;
+      }
+      if (Timer.st) return;
+      const sk = Timer.skipped();
+      const it = Store.itemsOn(today).find((i) => i.start !== null && i.dur > 0 && !i.done && Timer.can(i) && now >= i.start && now < i.start + i.dur && !sk[`${today}|${i.kind}|${i.id}`]);
+      if (!it) return;
+      const inf = Timer.info(it.kind, it.id, today); if (!inf) return;
+      Timer.st = { kind: it.kind, id: it.id, date: today, ...inf, t0: Date.now(), acc: 0, running: true, alerted: true, auto: true, end: it.start + it.dur, dur: it.dur };
+      persist(); UI.haptic(15); Timer.paint(true);
+      if (window.Notifier) Notifier.notify(T('tm.autoStart', { t: it.title }), T('tm.autoStartBody', { a: U.hm(it.start), b: U.hm((it.start + it.dur) % 1440) }), 'timer-start-' + it.id, { icon: 'play' });
+    },
 
     /* ----- interface : barre flottante + puces de la timeline ----- */
     paint(full) {
@@ -87,6 +114,11 @@
       });
       document.addEventListener('visibilitychange', () => { if (!document.hidden) Timer.paint(false); });
       Timer.paint(false);
+      setInterval(Timer.auto, 5000); setTimeout(Timer.auto, 800);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) Timer.auto(); });
+      // première interaction : demande l'autorisation de notifier (début / fin des blocs)
+      const ask = () => { document.removeEventListener('pointerdown', ask); if (window.Notifier && Notifier.supported && Notification.permission === 'default' && Store.settings.reminders) Notifier.ensurePermission(); };
+      document.addEventListener('pointerdown', ask);
     }
   };
   window.Timer = Timer;

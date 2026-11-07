@@ -3,9 +3,9 @@
   "name": "Present",
   "shortName": "Present",
   "description": "Habit tracking, time blocking, and AI coach",
-  "version": "2.5.0",
-  "versionCode": 25000,
-  "host": "YOUR_DOMAIN.com",
+  "version": "2.6.0",
+  "versionCode": 26000,
+  "host": "present-app-production.up.railway.app",
   "startUrl": "/",
   "display": "standalone",
   "orientation": "portrait",
@@ -35,7 +35,7 @@
   ],
   "enableNotifications": true,
   "enableSiteSettingsShortcut": true,
-  "webManifestUrl": "https://YOUR_DOMAIN.com/manifest.json",
+  "webManifestUrl": "https://present-app-production.up.railway.app/manifest.json",
   "fallbackType": "customtabs",
   "features": {
     "locationDelegation": {

@@ -41,7 +41,7 @@
     // pastille de coche : anneau de progression pour les habitudes mesurées partiellement
     chk(h, d, act, disabled) {
       const pct = Math.round(Store.pct(h, d) * 100), done = Store.isDone(h.id, d), part = Store.meas(h) && !done && pct > 0;
-      return `<button type="button" class="chk${done ? ' on' : ''}${part ? ' part' : ''}" ${part ? `style="--p:${pct}"` : ''} ${disabled ? 'disabled' : ''} data-act="${act}" data-id="${h.id}" role="checkbox" aria-checked="${done}" aria-label="${esc(h.name)}${part ? ' ' + pct + '%' : ''}">${Icons.i('check', 16, 3.2)}</button>`;
+      return `<button type="button" class="chk${done ? ' on' : ''}${part ? ' part' : ''}" ${disabled ? 'disabled' : ''} data-act="${act}" data-id="${h.id}" role="checkbox" aria-checked="${done}" aria-label="${esc(h.name)}${part ? ' ' + pct + '%' : ''}">${part ? UI.ring(pct, 30, 4, 'chk__ring') : Icons.i('check', 16, 3.2)}</button>`;
     },
 
     habit(id) {

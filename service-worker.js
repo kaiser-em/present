@@ -1,5 +1,5 @@
 // Present — Service Worker : hors-ligne + mises à jour propres
-const VERSION = 'present-v2.5.0';
+const VERSION = 'present-v2.6.0';
 const ASSETS = ['./', './index.html', './manifest.json', './css/tokens.css?v=7', './css/app.css?v=7',
   ...['util', 'i18n', 'icons', 'store', 'ui', 'forms', 'today', 'timeline', 'calendar', 'habit', 'statsview', 'coach', 'coach-plus', 'report', 'profile', 'notifier', 'timer', 'sync', 'app'].map((n) => `./js/${n}.js?v=7`),
   './assets/images/app-icon-192.png', './assets/images/app-icon-512.png', './assets/images/app-icon-maskable-512.png',

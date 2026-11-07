@@ -14,20 +14,21 @@
   }
 
   function row(it, d, idx, nowMin, isToday, conflict) {
-    const h = pillH(it.dur), inProg = isToday && it.dur && nowMin >= it.start && nowMin < end(it);
-    const prog = inProg ? Math.round(((nowMin - it.start) / it.dur) * 100) : 0;
+    const past = d < U.today() || (isToday && it.dur && end(it) <= nowMin) || (isToday && !it.dur && it.start < nowMin), h = pillH(it.dur), inProg = isToday && it.dur && nowMin >= it.start && nowMin < end(it);
+    const prog = inProg ? Math.round(((nowMin - it.start) / it.dur) * 100) : (past || it.done ? 100 : 0);
+    const rem = inProg ? `<span class="tl__rem">${T('tl.remaining', { d: U.dur(end(it) - nowMin) })}</span>` : '';
     const mv = it.kind === 'habit' && Store.meas(it.raw) ? ` · ${Store.fmtVal(it.raw, it.val || 0)}/${Store.fmtVal(it.raw, it.raw.target)}` : '';
-    const range = (it.dur ? `${U.hm(it.start)} - ${U.hm(end(it) % 1440)} (${U.dur(it.dur)})` : U.hm(it.start)) + mv;
+    const range = inProg ? rem : (it.dur ? `${U.hm(it.start)} - ${U.hm(end(it) % 1440)} (${U.dur(it.dur)})` : U.hm(it.start)) + mv;
     const subs = it.kind === 'task' && it.raw.subtasks.length ? `<span class="tl__tag">${Icons.i('check', 12, 3)} ${Store.subDone(d, it.id).length}/${it.raw.subtasks.length}</span>` : '';
     const notes = it.kind === 'task' && it.raw.notes ? `<span class="tl__tag">${Icons.i('file', 12)}</span>` : '';
     const small = h <= 60;
     const timing = isToday && window.Timer && Timer.is(it.kind, it.id, d);
     const go = isToday && window.Timer && (timing || Timer.can(it)) ? `<button type="button" class="tl__go${timing ? ' on' : ''}${timing && !Timer.st.running ? ' paused' : ''}" data-act="tl-timer">${Icons.i(timing && Timer.st.running ? 'pause' : 'play', 12)} ${timing ? `<span class="tm-live">${Timer.fmt()}</span>` : T('tm.start')}</button>` : '';
-    return `<div class="tl__row${it.done ? ' is-done' : ''}${inProg ? ' is-now' : ''}${timing ? ' is-timing' : ''}" style="--c:${it.color};--h:${h}px;--p:${prog}%" data-kind="${it.kind}" data-id="${it.id}" data-i="${idx}">
-      <div class="tl__time"><span class="tl__t0">${U.hm(it.start)}</span>${it.dur && h >= 110 ? `<span class="tl__t1">${U.hm(end(it) % 1440)}</span>` : ''}</div>
-      <div class="tl__rail"><div class="tl__pill${it.dur ? '' : ' tl__pill--dot'}">${Icons.i(it.icon, 24, 2)}</div></div>
+    return `<div class="tl__row${it.done ? ' is-done' : ''}${inProg ? ' is-now' : ''}${past && !inProg ? ' is-past' : ''}${inProg && prog < 14 ? ' nt0' : ''}${inProg && prog > 86 ? ' nt1' : ''}${timing ? ' is-timing' : ''}" style="--c:${it.color};--h:${h}px;--p:${prog}%" data-kind="${it.kind}" data-id="${it.id}" data-i="${idx}">
+      <div class="tl__time"><span class="tl__t0">${U.hm(it.start)}</span>${it.dur && h >= 110 ? `<span class="tl__t1">${U.hm(end(it) % 1440)}</span>` : ''}${inProg ? `<span class="tl__tnow">${U.hm(nowMin)}</span>` : ''}</div>
+      <div class="tl__rail"><div class="tl__pill${it.dur ? '' : ' tl__pill--dot'}">${it.dur ? '<i class="tl__fill"></i>' : ''}${Icons.i(it.icon, 20, 2)}</div></div>
       <div class="tl__body" data-act="tl-open" role="button" tabindex="0">
-        <div class="tl__meta">${range}${it.repeat ? ' ' + Icons.i('repeat', 13) : ''}${inProg ? `<em class="tl__live">${T('tl.inProgress')}</em>` : ''}</div>
+        <div class="tl__meta">${range}${it.repeat ? ' ' + Icons.i('repeat', 13) : ''}</div>
         <div class="tl__title${small ? ' tl__title--sm' : ''}">${esc(it.title)}</div>
         ${subs || notes || conflict ? `<div class="tl__tags">${subs}${notes}${conflict ? `<span class="tl__tag tl__tag--warn">${Icons.i('clock', 12)} ${T('tl.conflict')}</span>` : ''}</div>` : ''}
         ${go}
@@ -147,7 +148,7 @@
       // défilement vers "maintenant" (ou le premier élément) à l'ouverture d'un jour
       if (App._tlScroll) {
         App._tlScroll = false;
-        const target = tl.querySelector('.tl__now') || tl.querySelector('.tl__row:not(.is-done)') || tl.querySelector('.tl__row');
+        const target = tl.querySelector('.tl__now') || tl.querySelector('.tl__row.is-now') || tl.querySelector('.tl__row:not(.is-done)') || tl.querySelector('.tl__row');
         if (target) requestAnimationFrame(() => target.scrollIntoView({ block: 'center' }));
       }
 

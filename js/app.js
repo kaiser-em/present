@@ -4,7 +4,7 @@
   const NAV = [['today', 'home', 'nav.today'], ['timeline', 'list', 'nav.timeline'], ['calendar', 'calendar', 'nav.calendar'], ['stats', 'chart', 'nav.stats'], ['coach', 'sparkle', 'nav.coach'], ['profile', 'user', 'nav.profile']];
 
   const App = {
-    VERSION: '2.5.0',
+    VERSION: '2.6.0',
     date: U.today(),
     installPrompt: null,
     _route: 'today', _param: null, _tlScroll: false, _raf: 0, _minute: -1, _touching: false,
